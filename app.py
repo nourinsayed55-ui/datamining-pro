@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib, os, io
 
+from sentiment_model import predict_sentiment
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
@@ -132,8 +133,13 @@ k5.metric("📈 Calinski-H.",  metrics['Calinski-Harabasz'] if metrics else "N/A
 st.divider()
 
 # ─── Tabs ───────────────────────────────────────────────────────────────────
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📍 Cluster View", "📊 Profiles", "🔍 Customer Lookup", "📤 Upload & Predict", "📈 EDA"
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "📍 Cluster View",
+    "📊 Profiles",
+    "🔍 Customer Lookup",
+    "📤 Upload & Predict",
+    "📈 EDA",
+    "💬 Sentiment Analysis"   
 ])
 
 # ════ TAB 1 — Cluster Scatter ════════════════════════════════════════════════
@@ -283,3 +289,21 @@ with tab5:
             colors=['steelblue', 'coral'], startangle=90)
     ax8.set_title('Gender Split')
     st.pyplot(fig8)
+# ════ TAB 6 — Sentiment Analysis ═══════════════════════════
+with tab6:
+    st.subheader("💬 Sentiment Analysis (Bonus)")
+
+    user_input = st.text_area("Enter text or review")
+
+    if st.button("Analyze Sentiment"):
+        if user_input.strip() == "":
+            st.warning("Please enter text")
+        else:
+            result = predict_sentiment(user_input)
+
+            if result == "positive":
+                st.success(f"Sentiment: {result} 😊")
+            elif result == "negative":
+                st.error(f"Sentiment: {result} 😡")
+            else:
+                st.info(f"Sentiment: {result} 😐")
